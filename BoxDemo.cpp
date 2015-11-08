@@ -15,6 +15,8 @@
 #include "cbPerObject.h"
 #include "ConstantBuffer.h"
 #include "ShaderHelper.h"
+#include "D3Dcompiler.h"
+
 using namespace DirectX;
 
 struct Vertex
@@ -41,6 +43,8 @@ public:
 private:
 	void BuildGeometryBuffers();
 	void BuildFX();
+	HRESULT CompileShader(LPCWSTR srcFile, LPCSTR entryPoint, LPCSTR profile, ID3DBlob** blob);
+	void CompileShaders();
 	void BuildVertexLayout();
 	void BuildRasterState();
 
@@ -111,7 +115,7 @@ bool BoxApp::Init()
 {
 	if(!D3DApp::Init())
 		return false;
-
+	CompileShaders();
 	BuildGeometryBuffers();
 	BuildFX();
 	BuildVertexLayout();
@@ -159,8 +163,8 @@ void BoxApp::DrawScene()
 	md3dImmediateContext->VSSetShader(mVertexShader, NULL, 0);
 
 	UINT stride = sizeof(Vertex);
-    UINT offset = 0;
-    md3dImmediateContext->IASetVertexBuffers(0, 1, &mBoxVB, &stride, &offset);
+	UINT offset = 0;
+	md3dImmediateContext->IASetVertexBuffers(0, 1, &mBoxVB, &stride, &offset);
 	md3dImmediateContext->IASetIndexBuffer(mBoxIB, DXGI_FORMAT_R32_UINT, 0);
 
 	// Set constants
@@ -234,8 +238,8 @@ void BoxApp::OnMouseMove(WPARAM btnState, int x, int y)
 void BoxApp::BuildGeometryBuffers()
 {
 	// Create vertex buffer
-    Vertex vertices[] =
-    {
+	Vertex vertices[] =
+	{
 		{ XMFLOAT3(-1.0f, -1.0f, -1.0f), (const XMFLOAT4)Colors::White  },
 		{ XMFLOAT3(-1.0f, +1.0f, -1.0f), (const XMFLOAT4)Colors::Black  },
 		{ XMFLOAT3(+1.0f, +1.0f, -1.0f), (const XMFLOAT4)Colors::Red    },
@@ -244,18 +248,18 @@ void BoxApp::BuildGeometryBuffers()
 		{ XMFLOAT3(-1.0f, +1.0f, +1.0f), (const XMFLOAT4)Colors::Yellow },
 		{ XMFLOAT3(+1.0f, +1.0f, +1.0f), (const XMFLOAT4)Colors::Cyan	},
 		{ XMFLOAT3(+1.0f, -1.0f, +1.0f), (const XMFLOAT4)Colors::Magenta}
-    };
+	};
 
-    D3D11_BUFFER_DESC vbd;
-    vbd.Usage = D3D11_USAGE_IMMUTABLE;
-    vbd.ByteWidth = sizeof(Vertex) * 8;
-    vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    vbd.CPUAccessFlags = 0;
-    vbd.MiscFlags = 0;
+	D3D11_BUFFER_DESC vbd;
+	vbd.Usage = D3D11_USAGE_IMMUTABLE;
+	vbd.ByteWidth = sizeof(Vertex) * 8;
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbd.CPUAccessFlags = 0;
+	vbd.MiscFlags = 0;
 	vbd.StructureByteStride = 0;
-    D3D11_SUBRESOURCE_DATA vinitData;
-    vinitData.pSysMem = vertices;
-    HR(md3dDevice->CreateBuffer(&vbd, &vinitData, &mBoxVB));
+	D3D11_SUBRESOURCE_DATA vinitData;
+	vinitData.pSysMem = vertices;
+	HR(md3dDevice->CreateBuffer(&vbd, &vinitData, &mBoxVB));
 
 
 	// Create the index buffer
@@ -287,31 +291,92 @@ void BoxApp::BuildGeometryBuffers()
 	};
 
 	D3D11_BUFFER_DESC ibd;
-    ibd.Usage = D3D11_USAGE_IMMUTABLE;
-    ibd.ByteWidth = sizeof(UINT) * 36;
-    ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-    ibd.CPUAccessFlags = 0;
-    ibd.MiscFlags = 0;
+	ibd.Usage = D3D11_USAGE_IMMUTABLE;
+	ibd.ByteWidth = sizeof(UINT) * 36;
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibd.CPUAccessFlags = 0;
+	ibd.MiscFlags = 0;
 	ibd.StructureByteStride = 0;
-    D3D11_SUBRESOURCE_DATA iinitData;
-    iinitData.pSysMem = indices;
-    HR(md3dDevice->CreateBuffer(&ibd, &iinitData, &mBoxIB));
+	D3D11_SUBRESOURCE_DATA iinitData;
+	iinitData.pSysMem = indices;
+	HR(md3dDevice->CreateBuffer(&ibd, &iinitData, &mBoxIB));
 }
  
 void BoxApp::BuildFX()
 {
 	DWORD shaderFlags = 0;
 #if defined( DEBUG ) || defined( _DEBUG )
-    shaderFlags |= D3D10_SHADER_DEBUG;
+	shaderFlags |= D3D10_SHADER_DEBUG;
 	shaderFlags |= D3D10_SHADER_SKIP_OPTIMIZATION;
 #endif
-	
+
 	// Load cso files and create shaders
 	HR(ShaderHelper::LoadCompiledShader("SimplePixelShader.cso", &mPSBlob));
 	HR(md3dDevice->CreatePixelShader(mPSBlob->GetBufferPointer(), mPSBlob->GetBufferSize(), NULL, &mPixelShader));
 	
 	HR(ShaderHelper::LoadCompiledShader("SimpleVertexShader.cso", &mVSBlob));
 	HR(md3dDevice->CreateVertexShader(mVSBlob->GetBufferPointer(), mVSBlob->GetBufferSize(), NULL, &mVertexShader));
+}
+
+#pragma comment(lib,"d3dcompiler.lib")
+
+HRESULT BoxApp::CompileShader(_In_ LPCWSTR srcFile, _In_ LPCSTR entryPoint, _In_ LPCSTR profile, _Outptr_ ID3DBlob** blob)
+{
+	if (!srcFile || !entryPoint || !profile || !blob)
+		return E_INVALIDARG;
+
+	*blob = nullptr;
+
+	UINT flags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if defined( DEBUG ) || defined( _DEBUG )
+	flags |= D3DCOMPILE_DEBUG;
+#endif
+
+	const D3D_SHADER_MACRO defines[] =
+	{
+		"EXAMPLE_DEFINE", "1",
+		NULL, NULL
+	};
+
+	ID3DBlob* shaderBlob = nullptr;
+	ID3DBlob* errorBlob = nullptr;
+	HRESULT hr = D3DCompileFromFile(srcFile, defines, D3D_COMPILE_STANDARD_FILE_INCLUDE,
+		entryPoint, profile,
+		flags, 0, &shaderBlob, &errorBlob);
+	if (FAILED(hr))
+	{
+		if (errorBlob)
+		{
+			OutputDebugStringA((char*)errorBlob->GetBufferPointer());
+			errorBlob->Release();
+		}
+
+		if (shaderBlob)
+			shaderBlob->Release();
+
+		return hr;
+	}
+
+	*blob = shaderBlob;
+
+	return hr;
+}
+
+void BoxApp::CompileShaders()
+{
+	// Compile vertex shader shader
+	ID3DBlob *vsBlob = nullptr;
+	HRESULT hr = CompileShader(L"../SimpleVertexShader.hlsl", "main", "vs_4_0_level_9_1", &vsBlob);
+	if (FAILED(hr))
+	{
+		printf("Failed compiling vertex shader %08X\n", hr);
+	}
+	ID3DBlob *psBlob = nullptr;
+	hr = CompileShader(L"../SimplePixelShader.hlsl", "main", "ps_4_0_level_9_1", &psBlob);
+	if (FAILED(hr))
+	{
+		printf("Failed compiling pixel shader %08X\n", hr);
+	}
 }
 
 void BoxApp::BuildVertexLayout()
