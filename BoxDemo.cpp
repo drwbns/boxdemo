@@ -19,6 +19,8 @@
 
 using namespace DirectX;
 
+//Dxstar-1 test
+
 struct Vertex
 {
 	XMFLOAT3 Pos;
