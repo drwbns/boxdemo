@@ -30,7 +30,7 @@ public:
 
 	HRESULT Initialize(ID3D11Device* device)
 	{
-		HRESULT hr = S_OK;
+		HRESULT hr;
 		D3D11_BUFFER_DESC desc;
 		desc.Usage = D3D11_USAGE_DYNAMIC;
 		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;

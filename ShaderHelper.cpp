@@ -1,7 +1,6 @@
 #include "ShaderHelper.h"
 #include <fstream>
 #include <memory>
-#include <stdint.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
 using namespace std;
