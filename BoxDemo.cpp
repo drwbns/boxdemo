@@ -36,7 +36,7 @@ public:
 	bool Init();
 	void OnResize();
 	void UpdateScene(float dt);
-	void DrawScene(); 
+	void DrawScene();
 
 	void OnMouseDown(WPARAM btnState, int x, int y);
 	void OnMouseUp(WPARAM btnState, int x, int y);
@@ -118,7 +118,7 @@ bool BoxApp::Init()
 	if(!D3DApp::Init())
 		return false;
 	CompileShaders();
-	BuildGeometryBuffers();
+	//BuildGeometryBuffers();
 	BuildFX();
 	BuildVertexLayout();
 	BuildRasterState();
