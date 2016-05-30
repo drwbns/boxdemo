@@ -41,7 +41,7 @@ public:
 	void OnMouseDown(WPARAM btnState, int x, int y);
 	void OnMouseUp(WPARAM btnState, int x, int y);
 	void OnMouseMove(WPARAM btnState, int x, int y);
-
+	void LoadModel();
 private:
 	void BuildGeometryBuffers();
 	void BuildFX();
@@ -70,6 +70,10 @@ private:
 	float mRadius;
 
 	POINT mLastMousePos;
+
+	std::unique_ptr<Model> teapot;
+	std::unique_ptr<DirectX::CommonStates> m_states;
+	std::unique_ptr<DirectX::IEffectFactory> m_fxFactory;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
@@ -90,8 +94,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
  
 
 BoxApp::BoxApp(HINSTANCE hInstance)
-: D3DApp(hInstance), mBoxVB(0), mBoxIB(0), mInputLayout(0), 
-mTheta(1.5f*MathHelper::Pi), mPhi(0.25f*MathHelper::Pi), mRadius(5.0f)
+: D3DApp(hInstance), mBoxVB(0), mBoxIB(0), mPSBlob(nullptr), mVSBlob(nullptr), mPixelShader(nullptr), mVertexShader(nullptr), mInputLayout(0), mRasterState(nullptr),
+  mTheta(1.5f*MathHelper::Pi), mPhi(0.25f*MathHelper::Pi), mRadius(5.0f)
 {
 	mMainWndCaption = L"Box Demo";
 	
@@ -119,6 +123,9 @@ bool BoxApp::Init()
 		return false;
 	CompileShaders();
 	//BuildGeometryBuffers();
+	//TODO Add Geometry loading here
+	LoadModel();
+
 	BuildFX();
 	BuildVertexLayout();
 	BuildRasterState();
@@ -150,6 +157,11 @@ void BoxApp::UpdateScene(float dt)
 
 	XMMATRIX V = XMMatrixLookAtLH(pos, target, up);
 	XMStoreFloat4x4(&mView, V);
+
+	XMMATRIX world = XMLoadFloat4x4(&mWorld);
+	XMMATRIX proj = XMLoadFloat4x4(&mProj);
+
+	teapot->Draw(md3dImmediateContext, *m_states, world, V, proj);
 }
 
 void BoxApp::DrawScene()
@@ -235,6 +247,20 @@ void BoxApp::OnMouseMove(WPARAM btnState, int x, int y)
 
 	mLastMousePos.x = x;
 	mLastMousePos.y = y;
+}
+
+void BoxApp::LoadModel()
+{
+	m_states.reset(new CommonStates(md3dDevice));
+
+	m_fxFactory.reset(new EffectFactory(md3dDevice));
+
+	//std::unique_ptr<DGSLEffectFactory> fxFactory;
+	//fxFactory = std::make_unique<DGSLEffectFactory>(md3dDevice);
+	//DGSLEffectFactory fx(md3dDevice);
+
+	// Can also use EffectFactory, but will ignore pixel shader material settings
+	teapot = Model::CreateFromCMO(md3dDevice, L"test.cmo", *m_fxFactory);
 }
 
 void BoxApp::BuildGeometryBuffers()

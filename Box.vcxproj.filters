@@ -25,6 +25,9 @@
     <Filter Include="Header Files\ConstantBuffers">
       <UniqueIdentifier>{45716bf8-ee59-43af-9a83-528f083ea4fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Models">
+      <UniqueIdentifier>{8d1dc51c-002d-4b2c-809f-1e139b441e85}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BoxDemo.cpp">
@@ -87,5 +90,13 @@
     <FxCompile Include="SimpleVertexShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <MeshContentTask Include="..\..\..\3d exports\test.FBX">
+      <Filter>Models</Filter>
+    </MeshContentTask>
   </ItemGroup>
 </Project>
