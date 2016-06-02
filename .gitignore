@@ -158,12 +158,13 @@ $RECYCLE.BIN/
 *.db
 *.amplxeproj
 *.dat
-/My Amplifier XE Results - ModernBox/r000macc/sqlite-db
+/My Amplifier XE Results - ModernBox*
 /My Amplifier XE Results - ModernBox/r000macc
-/My Advisor XE Results - Box
-/My Inspector XE Results - ModernBox
+/My Advisor XE Results - Box*
+/My Inspector XE Results - ModernBox*
 /packages/directxtk_desktop_2015.2016.4.26.1/tools/native
 /packages/directxtk_desktop_2015.2016.4.26.1
 *.config
 /My Inspector Results - ModernBox/r000mi3
-/My Inspector Results - ModernBox
+/My Inspector Results - ModernBox*
+/My Amplifier XE Results - ModernBox/r001cgc
