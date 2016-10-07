@@ -89,12 +89,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 }
  
 
+/**
+ * \brief 
+ * \param hInstance 
+ */
 BoxApp::BoxApp(HINSTANCE hInstance)
-: D3DApp(hInstance), mBoxVB(0), mBoxIB(0), mInputLayout(0), 
-mTheta(1.5f*MathHelper::Pi), mPhi(0.25f*MathHelper::Pi), mRadius(5.0f)
+	: D3DApp(hInstance), mBoxVB(nullptr), mBoxIB(nullptr), mPSBlob(nullptr), mVSBlob(nullptr), mPixelShader(nullptr), mVertexShader(nullptr), mInputLayout(nullptr), mRasterState(nullptr),
+	  mTheta(1.5f * MathHelper::Pi), mPhi(0.25f * MathHelper::Pi), mRadius(5.0f)
 {
 	mMainWndCaption = L"Box Demo";
-	
+
 	mLastMousePos.x = 0;
 	mLastMousePos.y = 0;
 
@@ -161,8 +165,8 @@ void BoxApp::DrawScene()
 	md3dImmediateContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 	
 	// Set vertex and pixel shaders
-	md3dImmediateContext->PSSetShader(mPixelShader, NULL, 0);
-	md3dImmediateContext->VSSetShader(mVertexShader, NULL, 0);
+	md3dImmediateContext->PSSetShader(mPixelShader, nullptr, 0);
+	md3dImmediateContext->VSSetShader(mVertexShader, nullptr, 0);
 
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
@@ -337,7 +341,7 @@ HRESULT BoxApp::CompileShader(_In_ LPCWSTR srcFile, _In_ LPCSTR entryPoint, _In_
 	const D3D_SHADER_MACRO defines[] =
 	{
 		"EXAMPLE_DEFINE", "1",
-		NULL, NULL
+		nullptr, nullptr
 	};
 
 	ID3DBlob* shaderBlob = nullptr;
@@ -400,6 +404,6 @@ void BoxApp::BuildRasterState()
 	rs.FillMode = D3D11_FILL_SOLID;
 	rs.CullMode = D3D11_CULL_BACK;
 	rs.AntialiasedLineEnable = rs.DepthClipEnable = true;
-	mRasterState = NULL;
+	mRasterState = nullptr;
 	HR(md3dDevice->CreateRasterizerState(&rs, &mRasterState));
 }

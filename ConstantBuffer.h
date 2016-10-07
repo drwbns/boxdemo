@@ -14,7 +14,9 @@ private:
 	bool mInitialized;
 
 public:
-	ConstantBuffer(){}
+	ConstantBuffer(): mBuffer(nullptr), mInitialized(false)
+	{
+	}
 
 	~ConstantBuffer()
 	{
@@ -39,7 +41,7 @@ public:
 		desc.ByteWidth = static_cast<UINT>(sizeof(T) + (16 - (sizeof(T) % 16)));
 		desc.StructureByteStride = 0;
 
-		hr = device->CreateBuffer(&desc, 0, &mBuffer);
+		hr = device->CreateBuffer(&desc, nullptr, &mBuffer);
 		mInitialized = true;
 		return hr;
 	}

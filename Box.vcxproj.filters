@@ -94,9 +94,4 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <MeshContentTask Include="..\..\..\3d exports\test.FBX">
-      <Filter>Models</Filter>
-    </MeshContentTask>
-  </ItemGroup>
 </Project>

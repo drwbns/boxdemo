@@ -11,7 +11,7 @@ namespace
 	// This is just used to forward Windows messages from a global window
 	// procedure to our member function window procedure because we cannot
 	// assign a member function to WNDCLASS::lpfnWndProc.
-	D3DApp* gd3dApp = 0;
+	D3DApp* gd3dApp = nullptr;
 }
 
 LRESULT CALLBACK
@@ -29,19 +29,19 @@ D3DApp::D3DApp(HINSTANCE hInstance)
 	mClientWidth(800),
 	mClientHeight(600),
 	mEnable4xMsaa(false),
-	mhMainWnd(0),
+	mhMainWnd(nullptr),
 	mAppPaused(false),
 	mMinimized(false),
 	mMaximized(false),
 	mResizing(false),
 	m4xMsaaQuality(0),
  
-	md3dDevice(0),
-	md3dImmediateContext(0),
-	mSwapChain(0),
-	mDepthStencilBuffer(0),
-	mRenderTargetView(0),
-	mDepthStencilView(0)
+	md3dDevice(nullptr),
+	md3dImmediateContext(nullptr),
+	mSwapChain(nullptr),
+	mDepthStencilBuffer(nullptr),
+	mRenderTargetView(nullptr),
+	mDepthStencilView(nullptr)
 {
 	ZeroMemory(&mScreenViewport, sizeof(D3D11_VIEWPORT));
 
@@ -83,14 +83,14 @@ float D3DApp::AspectRatio()const
 
 int D3DApp::Run()
 {
-	MSG msg = {0};
+	MSG msg = {nullptr};
  
 	mTimer.Reset();
 
 	while(msg.message != WM_QUIT)
 	{
 		// If there are Window messages then process them.
-		if(PeekMessage( &msg, 0, 0, 0, PM_REMOVE ))
+		if(PeekMessage( &msg, nullptr, 0, 0, PM_REMOVE ))
 		{
             TranslateMessage( &msg );
             DispatchMessage( &msg );
@@ -146,7 +146,7 @@ void D3DApp::OnResize()
 	HR(mSwapChain->ResizeBuffers(1, mClientWidth, mClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM, 0));
 	ID3D11Texture2D* backBuffer;
 	HR(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer)));
-	HR(md3dDevice->CreateRenderTargetView(backBuffer, 0, &mRenderTargetView));
+	HR(md3dDevice->CreateRenderTargetView(backBuffer, nullptr, &mRenderTargetView));
 	ReleaseCOM(backBuffer);
 
 	// Create the depth/stencil buffer and view.
@@ -177,8 +177,8 @@ void D3DApp::OnResize()
 	depthStencilDesc.CPUAccessFlags = 0; 
 	depthStencilDesc.MiscFlags      = 0;
 
-	HR(md3dDevice->CreateTexture2D(&depthStencilDesc, 0, &mDepthStencilBuffer));
-	HR(md3dDevice->CreateDepthStencilView(mDepthStencilBuffer, 0, &mDepthStencilView));
+	HR(md3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &mDepthStencilBuffer));
+	HR(md3dDevice->CreateDepthStencilView(mDepthStencilBuffer, nullptr, &mDepthStencilView));
 
 
 	// Bind the render target view and depth/stencil view to the pipeline.
@@ -335,15 +335,15 @@ bool D3DApp::InitMainWindow()
 	wc.cbClsExtra    = 0;
 	wc.cbWndExtra    = 0;
 	wc.hInstance     = mhAppInst;
-	wc.hIcon         = LoadIcon(0, IDI_APPLICATION);
-	wc.hCursor       = LoadCursor(0, IDC_ARROW);
+	wc.hIcon         = LoadIcon(nullptr, IDI_APPLICATION);
+	wc.hCursor       = LoadCursor(nullptr, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
-	wc.lpszMenuName  = 0;
+	wc.lpszMenuName  = nullptr;
 	wc.lpszClassName = L"D3DWndClassName";
 
 	if( !RegisterClass(&wc) )
 	{
-		MessageBox(0, L"RegisterClass Failed.", 0, 0);
+		MessageBox(nullptr, L"RegisterClass Failed.", nullptr, 0);
 		return false;
 	}
 
@@ -354,10 +354,10 @@ bool D3DApp::InitMainWindow()
 	int height = R.bottom - R.top;
 
 	mhMainWnd = CreateWindow(L"D3DWndClassName", mMainWndCaption.c_str(), 
-		WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, mhAppInst, 0); 
+		WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, width, height, nullptr, nullptr, mhAppInst, nullptr); 
 	if( !mhMainWnd )
 	{
-		MessageBox(0, L"CreateWindow Failed.", 0, 0);
+		MessageBox(nullptr, L"CreateWindow Failed.", nullptr, 0);
 		return false;
 	}
 
@@ -378,11 +378,11 @@ bool D3DApp::InitDirect3D()
 
 	D3D_FEATURE_LEVEL featureLevel;
 	HRESULT hr = D3D11CreateDevice(
-			0,                 // default adapter
+			nullptr,                 // default adapter
 			md3dDriverType,
-			0,                 // no software device
+			nullptr,                 // no software device
 			createDeviceFlags, 
-			0, 0,              // default feature level array
+			nullptr, 0,              // default feature level array
 			D3D11_SDK_VERSION,
 			&md3dDevice,
 			&featureLevel,
@@ -390,13 +390,13 @@ bool D3DApp::InitDirect3D()
 
 	if( FAILED(hr) )
 	{
-		MessageBox(0, L"D3D11CreateDevice Failed.", 0, 0);
+		MessageBox(nullptr, L"D3D11CreateDevice Failed.", nullptr, 0);
 		return false;
 	}
 
 	if( featureLevel != D3D_FEATURE_LEVEL_11_0 )
 	{
-		MessageBox(0, L"Direct3D Feature Level 11 unsupported.", 0, 0);
+		MessageBox(nullptr, L"Direct3D Feature Level 11 unsupported.", nullptr, 0);
 		return false;
 	}
 
@@ -444,13 +444,13 @@ bool D3DApp::InitDirect3D()
 	// (by calling CreateDXGIFactory), we get an error: "IDXGIFactory::CreateSwapChain: 
 	// This function is being called with a device from a different IDXGIFactory."
 
-	IDXGIDevice* dxgiDevice = 0;
+	IDXGIDevice* dxgiDevice = nullptr;
 	HR(md3dDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgiDevice));
 	      
-	IDXGIAdapter* dxgiAdapter = 0;
+	IDXGIAdapter* dxgiAdapter = nullptr;
 	HR(dxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&dxgiAdapter));
 
-	IDXGIFactory* dxgiFactory = 0;
+	IDXGIFactory* dxgiFactory = nullptr;
 	HR(dxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&dxgiFactory));
 
 	HR(dxgiFactory->CreateSwapChain(md3dDevice, &sd, &mSwapChain));
