@@ -44,6 +44,7 @@ public:
 
 private:
 	void BuildColorBox();
+	void BuildTriangle();
 	void BuildFX();
 	HRESULT CompileShader(LPCWSTR srcFile, LPCSTR entryPoint, LPCSTR profile, ID3DBlob** blob);
 	void CompileShaders();
@@ -247,10 +248,9 @@ void BoxApp::BuildTriangle()
 	// Create vertex buffer
 	Vertex vertices[] =
 	{
-		{ XMFLOAT3(-1.0f, -1.0f, -1.0f), (const XMFLOAT4)Colors::White  },
-		{ XMFLOAT3(-1.0f, +1.0f, -1.0f), (const XMFLOAT4)Colors::Black  },
-		{ XMFLOAT3(+1.0f, +1.0f, -1.0f), (const XMFLOAT4)Colors::Red    },
-		{ XMFLOAT3(+1.0f, -1.0f, +1.0f), (const XMFLOAT4)Colors::Magenta}
+		{ XMFLOAT3(0.0f, 0.0f, 0.0f), (const XMFLOAT4)Colors::White  },
+		{ XMFLOAT3(-1.0f, 0.0f, 0.0f), (const XMFLOAT4)Colors::Black  },
+		{ XMFLOAT3(-1.0f, -1.0f, 0.0f), (const XMFLOAT4)Colors::Red    }
 	};
 
 	D3D11_BUFFER_DESC vbd;
@@ -269,8 +269,7 @@ void BoxApp::BuildTriangle()
 
 	UINT indices[] = {
 		// front face
-		0, 1, 2,
-		0, 2, 3
+		0, 2, 1
 	};
 
 	D3D11_BUFFER_DESC ibd;
