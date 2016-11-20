@@ -2,13 +2,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "C++ Launch (Windows)",
+            "name": "C++ Launch (Windows, Debug)",
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceRoot}/Debug/ModernBox.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceRoot}",
+            "cwd": "${workspaceRoot}/Debug",
             "environment": [],
             "externalConsole": false
         },
