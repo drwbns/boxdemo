@@ -122,7 +122,7 @@ bool BoxApp::Init()
 	if(!D3DApp::Init())
 		return false;
 	CompileShaders();
-	//BuildGeometryBuffers();
+	BuildGeometryBuffers();
 	BuildFX();
 	BuildVertexLayout();
 	BuildRasterState();
