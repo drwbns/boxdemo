@@ -213,6 +213,7 @@ void BoxApp::OnMouseUp(WPARAM btnState, int x, int y)
 
 void BoxApp::OnMouseMove(WPARAM btnState, int x, int y)
 {
+	/*
 	if( (btnState & MK_LBUTTON) != 0 )
 	{
 		// Make each pixel correspond to a quarter of a degree.
@@ -238,7 +239,7 @@ void BoxApp::OnMouseMove(WPARAM btnState, int x, int y)
 		// Restrict the radius.
 		mRadius = MathHelper::Clamp(mRadius, 3.0f, 15.0f);
 	}
-
+	*/
 	mLastMousePos.x = x;
 	mLastMousePos.y = y;
 }
