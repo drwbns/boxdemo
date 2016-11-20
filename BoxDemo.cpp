@@ -43,7 +43,7 @@ public:
 	void OnMouseMove(WPARAM btnState, int x, int y);
 
 private:
-	void BuildGeometryBuffers();
+	void BuildColorBox();
 	void BuildFX();
 	HRESULT CompileShader(LPCWSTR srcFile, LPCSTR entryPoint, LPCSTR profile, ID3DBlob** blob);
 	void CompileShaders();
@@ -122,7 +122,8 @@ bool BoxApp::Init()
 	if(!D3DApp::Init())
 		return false;
 	CompileShaders();
-	BuildGeometryBuffers();
+	//BuildColorBox();
+	BuildTriangle();
 	BuildFX();
 	BuildVertexLayout();
 	BuildRasterState();
@@ -241,7 +242,50 @@ void BoxApp::OnMouseMove(WPARAM btnState, int x, int y)
 	mLastMousePos.y = y;
 }
 
-void BoxApp::BuildGeometryBuffers()
+void BoxApp::BuildTriangle()
+{
+	// Create vertex buffer
+	Vertex vertices[] =
+	{
+		{ XMFLOAT3(-1.0f, -1.0f, -1.0f), (const XMFLOAT4)Colors::White  },
+		{ XMFLOAT3(-1.0f, +1.0f, -1.0f), (const XMFLOAT4)Colors::Black  },
+		{ XMFLOAT3(+1.0f, +1.0f, -1.0f), (const XMFLOAT4)Colors::Red    },
+		{ XMFLOAT3(+1.0f, -1.0f, +1.0f), (const XMFLOAT4)Colors::Magenta}
+	};
+
+	D3D11_BUFFER_DESC vbd;
+	vbd.Usage = D3D11_USAGE_IMMUTABLE;
+	vbd.ByteWidth = sizeof(Vertex) * 8;
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbd.CPUAccessFlags = 0;
+	vbd.MiscFlags = 0;
+	vbd.StructureByteStride = 0;
+	D3D11_SUBRESOURCE_DATA vinitData;
+	vinitData.pSysMem = vertices;
+	HR(md3dDevice->CreateBuffer(&vbd, &vinitData, &mBoxVB));
+
+
+	// Create the index buffer
+
+	UINT indices[] = {
+		// front face
+		0, 1, 2,
+		0, 2, 3
+	};
+
+	D3D11_BUFFER_DESC ibd;
+	ibd.Usage = D3D11_USAGE_IMMUTABLE;
+	ibd.ByteWidth = sizeof(UINT) * 6;
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibd.CPUAccessFlags = 0;
+	ibd.MiscFlags = 0;
+	ibd.StructureByteStride = 0;
+	D3D11_SUBRESOURCE_DATA iinitData;
+	iinitData.pSysMem = indices;
+	HR(md3dDevice->CreateBuffer(&ibd, &iinitData, &mBoxIB));
+}
+
+void BoxApp::BuildColorBox()
 {
 	// Create vertex buffer
 	Vertex vertices[] =
