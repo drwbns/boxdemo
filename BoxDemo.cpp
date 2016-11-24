@@ -150,8 +150,9 @@ void BoxApp::UpdateScene(float dt)
 	float y = mRadius*cosf(mPhi);
 
 	// Build the view matrix.
+	//XMVECTOR pos2 = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	XMVECTOR pos    = XMVectorSet(x, y, z, 1.0f);
-	XMVECTOR target = XMVectorZero();
+	XMVECTOR target = XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
 	XMVECTOR up     = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 	XMMATRIX V = XMMatrixLookAtLH(pos, target, up);
@@ -194,7 +195,7 @@ void BoxApp::DrawScene()
 	md3dImmediateContext->RSSetState(mRasterState);	
 	
 	// Draw
-	md3dImmediateContext->DrawIndexed(36, 0, 0);
+	md3dImmediateContext->DrawIndexed(3, 0, 0);
 	HR(mSwapChain->Present(0, 0));
 }
 
@@ -444,6 +445,7 @@ void BoxApp::BuildVertexLayout()
 void BoxApp::BuildRasterState()
 {
 	D3D11_RASTERIZER_DESC rs;
+	//rs.FrontCounterClockwise = TRUE;
 	memset(&rs, 0, sizeof(rs));
 	rs.FillMode = D3D11_FILL_SOLID;
 	rs.CullMode = D3D11_CULL_BACK;

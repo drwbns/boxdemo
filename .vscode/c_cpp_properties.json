@@ -18,7 +18,7 @@
         },
         {
             "name": "Win32",
-            "includePath": ["c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include","C:/Program Files (x86)/Windows Kits/10/Include/10.0.10240.0/um"],
+            "includePath": ["C:/PROGRAM FILES (X86)/WINDOWS KITS/10/INCLUDE/10.0.14393.0/UCRT","C:/PROGRAM FILES (X86)/WINDOWS KITS/10/INCLUDE/10.0.14393.0/UM","C:/DirectXCode/imgui-master","c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include","C:/Program Files (x86)/Windows Kits/10/Include/10.0.10240.0/um"],
             "browse" : {
                 "limitSymbolsToIncludedHeaders" : true,
                 "databaseFilename" : ""
