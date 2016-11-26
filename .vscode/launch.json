@@ -5,10 +5,10 @@
             "name": "C++ Launch (Windows, Debug)",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/Debug/ModernBox.exe",
+            "program": "${workspaceRoot}/Box.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceRoot}/Debug",
+            "cwd": "${workspaceRoot}",
             "environment": [],
             "externalConsole": false
         },

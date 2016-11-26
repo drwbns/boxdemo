@@ -95,6 +95,7 @@
     <ClCompile Include="d3dApp.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="MathHelper.cpp" />
     <ClCompile Include="ShaderHelper.cpp" />
   </ItemGroup>
