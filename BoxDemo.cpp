@@ -96,7 +96,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
  */
 BoxApp::BoxApp(HINSTANCE hInstance)
 	: D3DApp(hInstance), mBoxVB(nullptr), mBoxIB(nullptr), mPSBlob(nullptr), mVSBlob(nullptr), mPixelShader(nullptr), mVertexShader(nullptr), mInputLayout(nullptr), mRasterState(nullptr),
-	  mTheta(1.5f * MathHelper::Pi), mPhi(0.25f * MathHelper::Pi), mRadius(5.0f)
+	  mTheta(1.5f *MathHelper::Pi), mPhi(0.5f* MathHelper::Pi), mRadius(4.0f)
 {
 	mMainWndCaption = L"Box Demo";
 
@@ -152,7 +152,7 @@ void BoxApp::UpdateScene(float dt)
 	// Build the view matrix.
 	//XMVECTOR pos2 = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	XMVECTOR pos    = XMVectorSet(x, y, z, 1.0f);
-	XMVECTOR target = XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
+	XMVECTOR target = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	XMVECTOR up     = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 	XMMATRIX V = XMMatrixLookAtLH(pos, target, up);
@@ -251,8 +251,8 @@ void BoxApp::BuildTriangle()
 	Vertex vertices[] =
 	{
 		{ XMFLOAT3(0.0f, 0.0f, 0.0f), (const XMFLOAT4)Colors::White  },
-		{ XMFLOAT3(-1.0f, 0.0f, 0.0f), (const XMFLOAT4)Colors::Black  },
-		{ XMFLOAT3(-1.0f, -1.0f, 0.0f), (const XMFLOAT4)Colors::Red    }
+		{ XMFLOAT3(1.0f, 1.0f, 0.0f), (const XMFLOAT4)Colors::Black  },
+		{ XMFLOAT3(1.0f, 0.0f, 0.0f), (const XMFLOAT4)Colors::Red    }
 	};
 
 	D3D11_BUFFER_DESC vbd;
@@ -271,7 +271,7 @@ void BoxApp::BuildTriangle()
 
 	UINT indices[] = {
 		// front face
-		0, 2, 1
+		0, 1, 2
 	};
 
 	D3D11_BUFFER_DESC ibd;
