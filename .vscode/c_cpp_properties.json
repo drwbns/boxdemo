@@ -2,11 +2,29 @@
     "configurations": [
         {
             "name": "Win32",
-            "includePath": ["C:/PROGRAM FILES (X86)/WINDOWS KITS/10/INCLUDE/10.0.10586.0/UCRT","C:/PROGRAM FILES (X86)/WINDOWS KITS/10/INCLUDE/10.0.10586.0/UM","C:/DirectXCode/imgui-master","c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include","C:/Program Files (x86)/Windows Kits/10/Include/10.0.10586.0/um"],
-            "browse" : {
-                "limitSymbolsToIncludedHeaders" : true,
-                "databaseFilename" : ""
-            }
+            "includePath": [
+                "C:/PROGRAM FILES (X86)/WINDOWS KITS/10/INCLUDE/10.0.10586.0/UCRT",
+                "C:/PROGRAM FILES (X86)/WINDOWS KITS/10/INCLUDE/10.0.10586.0/UM",
+                "C:/DirectXCode/imgui-master",
+                "c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include",
+                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.10586.0/um",
+                "${workspaceRoot}"
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "",
+                "path": [
+                    "C:/Program Files (x86)/Windows Kits/10/Include/10.0.14393.0/um",
+                    "C:/PROGRAM FILES (X86)/WINDOWS KITS/10/INCLUDE/10.0.10586.0/UCRT",
+                    "C:/PROGRAM FILES (X86)/WINDOWS KITS/10/INCLUDE/10.0.10586.0/UM",
+                    "C:/DirectXCode/imgui-master",
+                    "c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include",
+                    "C:/Program Files (x86)/Windows Kits/10/Include/10.0.10586.0/um",
+                    "${workspaceRoot}"
+                ]
+            },
+            "intelliSenseMode": "msvc-x64"
         }
-    ]
+    ],
+    "version": 3
 }

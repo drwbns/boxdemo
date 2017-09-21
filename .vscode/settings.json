@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "cstddef": "cpp",
+        "iostream": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "ios": "cpp",
+        "xlocnum": "cpp",
+        "climits": "cpp",
+        "streambuf": "cpp",
+        "VECTOR": "cpp",
+        "IOSTREAM": "cpp",
+        "MAP": "cpp"
+    }
+}

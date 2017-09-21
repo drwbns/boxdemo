@@ -96,7 +96,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
  */
 BoxApp::BoxApp(HINSTANCE hInstance)
 	: D3DApp(hInstance), mBoxVB(nullptr), mBoxIB(nullptr), mPSBlob(nullptr), mVSBlob(nullptr), mPixelShader(nullptr), mVertexShader(nullptr), mInputLayout(nullptr), mRasterState(nullptr),
-	  mTheta(1.5f *MathHelper::Pi), mPhi(0.5f* MathHelper::Pi), mRadius(4.0f)
+	  mTheta(0.5f* MathHelper::Pi), mPhi(1.5f *MathHelper::Pi),  mRadius(10.0f)
 {
 	mMainWndCaption = L"Box Demo";
 
@@ -138,16 +138,16 @@ void BoxApp::OnResize()
 	D3DApp::OnResize();
 
 	// The window resized, so update the aspect ratio and recompute the projection matrix.
-	XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
+	XMMATRIX P = XMMatrixPerspectiveFovRH(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
 	XMStoreFloat4x4(&mProj, P);
 }
 
 void BoxApp::UpdateScene(float dt)
 {
 	// Convert Spherical to Cartesian coordinates.
-	float x = mRadius*sinf(mPhi)*cosf(mTheta);
-	float z = mRadius*sinf(mPhi)*sinf(mTheta);
-	float y = mRadius*cosf(mPhi);
+	float x = mRadius*sinf(mTheta)*cosf(mPhi);
+	float z = mRadius*sinf(mTheta)*sinf(-mPhi);
+	float y = mRadius*cosf(mTheta);
 
 	// Build the view matrix.
 	//XMVECTOR pos2 = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
@@ -155,7 +155,7 @@ void BoxApp::UpdateScene(float dt)
 	XMVECTOR target = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	XMVECTOR up     = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
-	XMMATRIX V = XMMatrixLookAtLH(pos, target, up);
+	XMMATRIX V = XMMatrixLookAtRH(pos, target, up);
 	XMStoreFloat4x4(&mView, V);
 }
 
@@ -214,7 +214,7 @@ void BoxApp::OnMouseUp(WPARAM btnState, int x, int y)
 
 void BoxApp::OnMouseMove(WPARAM btnState, int x, int y)
 {
-	/*
+	
 	if( (btnState & MK_LBUTTON) != 0 )
 	{
 		// Make each pixel correspond to a quarter of a degree.
@@ -222,11 +222,11 @@ void BoxApp::OnMouseMove(WPARAM btnState, int x, int y)
 		float dy = XMConvertToRadians(0.25f*static_cast<float>(y - mLastMousePos.y));
 
 		// Update angles based on input to orbit camera around box.
-		mTheta += dx;
-		mPhi   += dy;
+		mTheta -= dy;
+		mPhi   -= dx;
 
 		// Restrict the angle mPhi.
-		mPhi = MathHelper::Clamp(mPhi, 0.1f, MathHelper::Pi-0.1f);
+		mTheta = MathHelper::Clamp(mTheta, 0.1f, MathHelper::Pi-0.1f);
 	}
 	else if( (btnState & MK_RBUTTON) != 0 )
 	{
@@ -240,7 +240,7 @@ void BoxApp::OnMouseMove(WPARAM btnState, int x, int y)
 		// Restrict the radius.
 		mRadius = MathHelper::Clamp(mRadius, 3.0f, 15.0f);
 	}
-	*/
+	
 	mLastMousePos.x = x;
 	mLastMousePos.y = y;
 }
